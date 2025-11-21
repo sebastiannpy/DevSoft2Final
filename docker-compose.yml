@@ -1,0 +1,87 @@
+version: '3.9'
+
+services:
+
+  # ==========================
+  # CLIENT SERVICE
+  # ==========================
+  client-service:
+    build: ./client-service
+    container_name: client-service
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGO_URL=mongodb://client-db:27017/clientsdb
+    depends_on:
+      - client-db
+
+  client-db:
+    image: mongo
+    container_name: client-db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - client_data:/data/db
+
+
+  # ==========================
+  # PRODUCT SERVICE
+  # ==========================
+  product-service:
+    build: ./product-service
+    container_name: product-service
+    restart: always
+    ports:
+      - "3002:3002"
+    environment:
+      - MONGO_URL=mongodb://product-db:27017/productsdb
+    depends_on:
+      - product-db
+
+  product-db:
+    image: mongo
+    container_name: product-db
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - product_data:/data/db
+
+
+  # ==========================
+  # SALE SERVICE
+  # ==========================
+  sale-service:
+    build: ./sale-service
+    container_name: sale-service
+    restart: always
+    ports:
+      - "3003:3003"
+    environment:
+      - MONGO_URL=mongodb://sale-db:27017/salesdb
+      - CLIENT_SERVICE_URL=http://client-service:3001/clients
+      - PRODUCT_SERVICE_URL=http://product-service:3002/products
+    depends_on:
+      - sale-db
+      - client-service
+      - product-service
+
+  sale-db:
+    image: mongo
+    container_name: sale-db
+    restart: always
+    ports:
+      - "27019:27017"
+    volumes:
+      - sale_data:/data/db
+
+
+# ==========================
+# VOLUMENES PERSISTENTES
+# ==========================
+volumes:
+  client_data:
+  product_data:
+  sale_data:
