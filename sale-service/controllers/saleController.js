@@ -1,13 +1,13 @@
 const axios = require("axios");
 const Venta = require("../models/Venta");
 
-// GET /ventas
+
 exports.getAll = async (req, res) => {
   const ventas = await Venta.find();
   res.json(ventas);
 };
 
-// GET /ventas/:id
+
 exports.getById = async (req, res) => {
   try {
     const venta = await Venta.findById(req.params.id);
@@ -18,11 +18,11 @@ exports.getById = async (req, res) => {
   }
 };
 
-// POST /ventas  (REALIZA LA VENTA)
+
 exports.create = async (req, res) => {
   const { clienteId, productoId, cantidad } = req.body;
 
-  // 1️⃣ Consultar microservicio clientes
+  
   const cliente = await axios
     .get(`http://client-service:3001/clients/${clienteId}`)
     .then(r => r.data)
@@ -30,7 +30,7 @@ exports.create = async (req, res) => {
 
   if (!cliente) return res.status(400).json({ error: "Cliente inválido" });
 
-  // 2️⃣ Consultar microservicio productos
+  
   const producto = await axios
     .get(`http://product-service:3002/products/${productoId}`)
     .then(r => r.data)
@@ -41,12 +41,12 @@ exports.create = async (req, res) => {
   if (producto.stock < cantidad)
     return res.status(400).json({ error: "Stock insuficiente" });
 
-  // 3️⃣ Registrar venta
+  
   const venta = new Venta({
     clienteId,
     productoId,
     cantidad,
-    //total: producto.precio * cantidad,
+    
   });
 
   await venta.save();
@@ -54,7 +54,7 @@ exports.create = async (req, res) => {
   res.status(201).json({ mensaje: "Venta registrada", venta });
 };
 
-// PUT /ventas/:id
+
 exports.update = async (req, res) => {
   try {
     const actualizado = await Venta.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -65,7 +65,7 @@ exports.update = async (req, res) => {
   }
 };
 
-// DELETE /ventas/:id
+
 exports.remove = async (req, res) => {
   try {
     const eliminado = await Venta.findByIdAndDelete(req.params.id);

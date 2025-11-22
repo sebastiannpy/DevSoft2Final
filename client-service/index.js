@@ -6,7 +6,6 @@ const clientRoutes = require('./routes/clientRoutes');
 
 app.use(express.json());
 
-// ⬅️ CONECTAR USANDO LA VARIABLE DEL DOCKER COMPOSE
 const mongoUrl = process.env.MONGO_URL;
 
 mongoose.connect(mongoUrl)

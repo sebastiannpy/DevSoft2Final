@@ -1,12 +1,12 @@
 const Producto = require("../models/Producto");
 
-// GET /productos
+
 exports.getAll = async (req, res) => {
   const productos = await Producto.find();
   res.json(productos);
 };
 
-// GET /productos/:id
+
 exports.getById = async (req, res) => {
   try {
     const producto = await Producto.findById(req.params.id);
@@ -17,14 +17,14 @@ exports.getById = async (req, res) => {
   }
 };
 
-// POST /productos
+
 exports.create = async (req, res) => {
   const nuevo = new Producto(req.body);
   await nuevo.save();
   res.status(201).json(nuevo);
 };
 
-// PUT /productos/:id
+
 exports.update = async (req, res) => {
   try {
     const actualizado = await Producto.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -35,7 +35,7 @@ exports.update = async (req, res) => {
   }
 };
 
-// DELETE /productos/:id
+
 exports.remove = async (req, res) => {
   try {
     const eliminado = await Producto.findByIdAndDelete(req.params.id);
